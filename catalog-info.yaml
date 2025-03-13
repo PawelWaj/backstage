@@ -1,5 +1,24 @@
 ---
 apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: guest
+  description: Default guest group for unauthenticated users
+spec:
+  type: team
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: web-apps
+  description: System for web-based applications
+spec:
+  owner: group:default/guest
+
+---
+apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: simple-app
@@ -10,8 +29,8 @@ metadata:
 spec:
   type: service
   lifecycle: experimental
-  owner: guest
-  system: web-apps
+  owner: group:default/guest  # References the defined group
+  system: system:default/web-apps  # References the defined system
 
 ---
 apiVersion: backstage.io/v1alpha1
@@ -21,7 +40,7 @@ metadata:
   description: Template for creating a simple web app in Backstage
 spec:
   type: service
-  owner: guest
+  owner: group:default/guest  # Updated to full entity ref
   parameters:
     - title: App Name
       type: string
@@ -34,7 +53,7 @@ spec:
   steps:
     - id: fetch-base
       name: Fetch Base Template
-      action: fetch:template
+      action: fetch:plain
       input:
         url: ./skeleton
         values:
@@ -44,4 +63,4 @@ spec:
       name: Register in Catalog
       action: catalog:register
       input:
-        catalogInfoPath: '/catalog-info.yaml'  # Path to generated file in temp workspace
+        catalogInfoPath: '/catalog-info.yaml'
