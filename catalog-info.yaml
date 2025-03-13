@@ -18,7 +18,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Template
 metadata:
   name: simple-app-template
-  description: Template for creating and deploying a simple web app
+  description: Template for creating a simple web app in Backstage
 spec:
   type: service
   owner: guest
@@ -27,10 +27,6 @@ spec:
       type: string
       description: Unique name for your app
       default: my-simple-app
-    - title: Repository Name
-      type: string
-      description: GitHub repository name (must be unique in your org)
-      default: my-simple-app-repo
     - title: Owner
       type: string
       description: Owner of the app (e.g., username or team)
@@ -43,18 +39,9 @@ spec:
         url: ./skeleton
         values:
           appName: '{{ parameters.App Name }}'
-          repoName: '{{ parameters.Repository Name }}'
           owner: '{{ parameters.Owner }}'
-    - id: publish-github
-      name: Publish to GitHub
-      action: publish:github
-      input:
-        allowedHosts: ["github.com"]
-        description: 'A simple app created via Backstage'
-        repoUrl: 'github.com?owner=PawelWaj&repo={{ parameters.Repository Name }}'
     - id: register
       name: Register in Catalog
       action: catalog:register
       input:
-        repoContentsUrl: 'https://github.com/PawelWaj/{{ parameters.Repository Name }}/blob/main/catalog-info.yaml'
-        catalogInfoPath: '/catalog-info.yaml'
+        catalogInfoPath: '/catalog-info.yaml'  # Path to generated file in temp workspace
