@@ -5,13 +5,13 @@ metadata:
   name: simple-app
   description: A simple web application deployed via Backstage
   annotations:
-    github.com/project-slug: your-org/simple-app  # Replace with your GitHub org/repo
-    backstage.io/techdocs-ref: dir:.              # Enables TechDocs (docs in same dir)
+    github.com/project-slug: PawelWaj/simple-app
+    backstage.io/techdocs-ref: dir:.
 spec:
   type: service
   lifecycle: experimental
-  owner: guest                                  # Matches your guest auth setup
-  system: web-apps                              # Optional grouping
+  owner: guest
+  system: web-apps
 
 ---
 apiVersion: backstage.io/v1alpha1
@@ -25,31 +25,36 @@ spec:
   parameters:
     - title: App Name
       type: string
-      description: Name of your new app
+      description: Unique name for your app
       default: my-simple-app
     - title: Repository Name
       type: string
-      description: GitHub repository name for the app
+      description: GitHub repository name (must be unique in your org)
       default: my-simple-app-repo
+    - title: Owner
+      type: string
+      description: Owner of the app (e.g., username or team)
+      default: guest
   steps:
     - id: fetch-base
-      name: Fetch Template Files
+      name: Fetch Base Template
       action: fetch:template
       input:
-        url: ./skeleton                           # Assumes a skeleton dir in repo
+        url: ./skeleton
         values:
           appName: '{{ parameters.App Name }}'
           repoName: '{{ parameters.Repository Name }}'
+          owner: '{{ parameters.Owner }}'
     - id: publish-github
       name: Publish to GitHub
       action: publish:github
       input:
         allowedHosts: ["github.com"]
         description: 'A simple app created via Backstage'
-        repoUrl: 'github.com?owner=your-org&repo={{ parameters.Repository Name }}'  # Replace "your-org"
+        repoUrl: 'github.com?owner=PawelWaj&repo={{ parameters.Repository Name }}'
     - id: register
       name: Register in Catalog
       action: catalog:register
       input:
-        repoContentsUrl: 'https://github.com/your-org/{{ parameters.Repository Name }}/blob/main/catalog-info.yaml'
+        repoContentsUrl: 'https://github.com/PawelWaj/{{ parameters.Repository Name }}/blob/main/catalog-info.yaml'
         catalogInfoPath: '/catalog-info.yaml'
