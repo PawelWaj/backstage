@@ -1,0 +1,55 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: simple-app
+  description: A simple web application deployed via Backstage
+  annotations:
+    github.com/project-slug: your-org/simple-app  # Replace with your GitHub org/repo
+    backstage.io/techdocs-ref: dir:.              # Enables TechDocs (docs in same dir)
+spec:
+  type: service
+  lifecycle: experimental
+  owner: guest                                  # Matches your guest auth setup
+  system: web-apps                              # Optional grouping
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Template
+metadata:
+  name: simple-app-template
+  description: Template for creating and deploying a simple web app
+spec:
+  type: service
+  owner: guest
+  parameters:
+    - title: App Name
+      type: string
+      description: Name of your new app
+      default: my-simple-app
+    - title: Repository Name
+      type: string
+      description: GitHub repository name for the app
+      default: my-simple-app-repo
+  steps:
+    - id: fetch-base
+      name: Fetch Template Files
+      action: fetch:template
+      input:
+        url: ./skeleton                           # Assumes a skeleton dir in repo
+        values:
+          appName: '{{ parameters.App Name }}'
+          repoName: '{{ parameters.Repository Name }}'
+    - id: publish-github
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        allowedHosts: ["github.com"]
+        description: 'A simple app created via Backstage'
+        repoUrl: 'github.com?owner=your-org&repo={{ parameters.Repository Name }}'  # Replace "your-org"
+    - id: register
+      name: Register in Catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: 'https://github.com/your-org/{{ parameters.Repository Name }}/blob/main/catalog-info.yaml'
+        catalogInfoPath: '/catalog-info.yaml'
