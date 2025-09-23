@@ -1,4 +1,8 @@
 ```markdown
+Below is a zero-to-prod learning ladder that takes you from “I’ve never run Backstage” to “I can ship a plugin that talks to a third-party API and surfaces its data in the Catalog.”
+Each rung is a single command or file change you can do in ≤30 min; do them in order and you will have a working integration at the end of every step.
+
+
 # Backstage Plugin Bootcamp – Complete Markdown Steps  
 ---
 
