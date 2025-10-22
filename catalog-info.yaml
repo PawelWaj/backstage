@@ -1,11 +1,20 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: demo-jira-component
+  name: jira-demo-service
+  description: Demo service showcasing Jira dashboard integration
   annotations:
-    jira.com/project-key: ETP # Single Jira project key
-    # Or if your component is part of multiple Jira projects, you can specify multiple project keys by providing a comma-separated list
+    # Jira Dashboard Plugin Integration
+    jira.com/project-key: "ETP"                    # Required: Project key
+    jira.com/filter-id: "10566"                    # Optional: Saved filter ID
+    jira.com/component: "backend"                  # Optional: Component filter
+    
+    # Additional metadata
+    github.com/project-slug: "eon-energy/espresso-demo"
+    backstage.io/techdocs-ref: "dir:."
+    
 spec:
-  type: website
-  owner: john@example.com
+  type: service
   lifecycle: experimental
+  owner: team-a
+  system: demo-platform
