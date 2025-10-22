@@ -1,66 +1,7 @@
----
-apiVersion: backstage.io/v1alpha1
-kind: Group
-metadata:
-  name: guest
-  description: Default guest group for unauthenticated users
-spec:
-  type: team
-  children: []
-
----
-apiVersion: backstage.io/v1alpha1
-kind: System
-metadata:
-  name: web-apps
-  description: System for web-based applications
-spec:
-  owner: group:default/guest
-
----
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: simple-app
-  description: A simple web application deployed via Backstage
+  # ...
   annotations:
-    github.com/project-slug: PawelWaj/simple-app
-    backstage.io/techdocs-ref: dir:.
-spec:
-  type: service
-  lifecycle: experimental
-  owner: group:default/guest  # References the defined group
-  system: system:default/web-apps  # References the defined system
-
----
-apiVersion: backstage.io/v1alpha1
-kind: Template
-metadata:
-  name: simple-app-template
-  description: Template for creating a simple web app in Backstage
-spec:
-  type: service
-  owner: group:default/guest  # Updated to full entity ref
-  parameters:
-    - title: App Name
-      type: string
-      description: Unique name for your app
-      default: my-simple-app
-    - title: Owner
-      type: string
-      description: Owner of the app (e.g., username or team)
-      default: guest
-  steps:
-    - id: fetch-base
-      name: Fetch Base Template
-      action: fetch:plain
-      input:
-        url: ./skeleton
-        values:
-          appName: '{{ parameters.App Name }}'
-          owner: '{{ parameters.Owner }}'
-    - id: register
-      name: Register in Catalog
-      action: catalog:register
-      input:
-        catalogInfoPath: '/catalog-info.yaml'
+    jira.com/project-key: ETP # Single Jira project key
+    # Or if your component is part of multiple Jira projects, you can specify multiple project keys by providing a comma-separated list
