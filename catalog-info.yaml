@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  # ...
+  name: demo-jira-component
   annotations:
     jira.com/project-key: ETP # Single Jira project key
     # Or if your component is part of multiple Jira projects, you can specify multiple project keys by providing a comma-separated list
