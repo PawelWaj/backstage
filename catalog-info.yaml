@@ -5,8 +5,8 @@ metadata:
   description: Demo service showcasing Jira dashboard integration
   annotations:
     # Jira Dashboard Plugin Integration
-    jira.com/project-key: "ETP"                    # Required: Project key
-    jira.com/filter-id: "10566"                    # Optional: Saved filter ID
+    jira/project-key: "ETP"                    # Required: Project key
+    jira/filter-id: "10566"                    # Optional: Saved filter ID
     jira.com/component: "backend"                  # Optional: Component filter
     
     # Additional metadata
