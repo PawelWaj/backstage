@@ -13,6 +13,7 @@ metadata:
     jira/project-key: ETP
     # Jira filter ID (optional - filters issues shown)
     jira/filter-id: "10566"
+    jira/component: "backend"
     # github.com/project-slug: "eon-energy/espresso-demo"
 spec:
   type: service
