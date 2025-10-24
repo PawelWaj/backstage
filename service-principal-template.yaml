@@ -1,0 +1,109 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: service-principal-template
+  title: Service Principal Template
+  description: Create a new Service Principal with specified IAM configuration
+  tags:
+    - iam
+    - service-principal
+    - security
+    - azure
+spec:
+  owner: platform-team
+  type: resource
+  parameters:
+    - title: Service Principal Configuration
+      required:
+        - members
+        - description
+      properties:
+        description:
+          title: Description
+          type: string
+          description: Detailed technical description of what would be done with this service principal
+        members:
+          title: Members
+          type: array
+          description: List of members that should have access to this service principal
+          items:
+            type: string
+          ui:options:
+            addable: true
+            removable: true
+            placeholder: "Enter member ID or email"
+        assignmentRequired:
+          title: Assignment Required
+          type: boolean
+          description: Is group or member assignment required for the application
+          default: true
+        adminConsent:
+          title: Admin Consent
+          type: boolean
+          description: Grant admin consent to the specified scopes
+          default: false
+        clientSecret:
+          title: Create Client Secret
+          type: boolean
+          description: If true, secret is created with default expiry
+          default: false
+    - title: Application Roles & Permissions
+      properties:
+        appRoles:
+          title: App Roles
+          type: array
+          description: A list of app roles to assign to the service principal
+          items:
+            type: string
+          default: []
+          ui:options:
+            addable: true
+            removable: true
+        groupMembershipClaims:
+          title: Group Membership Claims
+          type: array
+          description: A set of strings containing membership claims issued in user/access tokens
+          items:
+            type: string
+          default: []
+          ui:options:
+            addable: true
+            removable: true
+        federatedCredentials:
+          title: Federated Credentials
+          type: object
+          description: Configuration for federated identity credentials
+          properties:
+            enabled:
+              title: Enable Federated Credentials
+              type: boolean
+              default: false
+    - title: Provider Configuration
+      properties:
+        azureadProviderConfig:
+          title: Azure AD Provider Config
+          type: string
+          description: Provider configuration reference for Azure AD
+          default: "azuread-provider"
+        leanixProviderConfig:
+          title: LeanIX Provider Config
+          type: string
+          description: Provider configuration reference for LeanIX
+          default: "provider-config-leanix"
+  steps:
+    - id: log
+      name: Log Service Principal Parameters
+      action: debug:log
+      input:
+        message: 'Creating Service Principal with description: ${{ parameters.description }}, Members: ${{ parameters.members }}, Assignment Required: ${{ parameters.assignmentRequired }}'
+  output:
+    text:
+      - title: Service Principal Summary
+        content: |
+          Service Principal has been configured with:
+          - Description: ${{ parameters.description }}
+          - Members: ${{ parameters.members | length }} member(s)
+          - Assignment Required: ${{ parameters.assignmentRequired }}
+          - Admin Consent: ${{ parameters.adminConsent }}
+          - Client Secret: ${{ parameters.clientSecret }}
+          - App Roles: ${{ parameters.appRoles | length }} role(s)
