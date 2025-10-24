@@ -1,0 +1,96 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: group-template
+  title: Entra ID Group Template
+  description: Create a new Entra ID Group with specified configuration
+  tags:
+    - entraid
+    - group
+    - security
+spec:
+  owner: platform-team
+  type: resource
+  parameters:
+    - title: Group Configuration
+      required:
+        - name
+        - description
+        - integration
+      properties:
+        name:
+          title: Group Name
+          type: string
+          description: The name of the group in Entra ID
+          pattern: '^[a-zA-Z0-9-_\s]+$'
+          minLength: 5
+        description:
+          title: Description
+          type: string
+          description: The description for the group
+          minLength: 5
+        integration:
+          title: Integration
+          type: string
+          description: The name of the Atlantis integration for which this group is created
+          enum:
+            - aws
+          default: aws
+        subname:
+          title: Subname
+          type: string
+          description: An additional field to say the group is for specific role
+          maxLength: 20
+        externalId:
+          title: External ID
+          type: string
+          description: The ID of the resource in upstream
+          default: ""
+        members:
+          title: Members
+          type: array
+          description: A set of object IDs of principals that will be added as members
+          items:
+            type: string
+          default: []
+          ui:options:
+            addable: true
+            removable: true
+        owners:
+          title: Owners
+          type: array
+          description: A set of object IDs of principals that will be granted ownership
+          items:
+            type: string
+          default: []
+          ui:options:
+            addable: true
+            removable: true
+    - title: Provider Configuration
+      properties:
+        azureadProviderConfig:
+          title: Azure AD Provider Config
+          type: string
+          description: Provider configuration reference for Azure AD
+          default: "azuread-provider"
+        leanixProviderConfig:
+          title: LeanIX Provider Config
+          type: string
+          description: Provider configuration reference for LeanIX
+          default: "provider-config-leanix"
+  steps:
+    - id: log
+      name: Log Group Parameters
+      action: debug:log
+      input:
+        message: 'Creating Group: ${{ parameters.name }}, Description: ${{ parameters.description }}, Integration: ${{ parameters.integration }}, Members: ${{ parameters.members }}, Owners: ${{ parameters.owners }}'
+   
+  output:
+    text:
+      - title: Group Details
+        content: |
+          Group "${{ parameters.name }}" has been configured with the following settings:
+          - Description: ${{ parameters.description }}
+          - Integration: ${{ parameters.integration }}
+          - Members: ${{ parameters.members }}
+          - Owners: ${{ parameters.owners }}

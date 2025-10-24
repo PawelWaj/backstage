@@ -1,0 +1,73 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: onboarding-template
+  title: Platform Onboarding Template
+  description: Onboard a new application to the Atlantis platform
+  tags:
+    - onboarding
+    - platform
+    - application
+spec:
+  owner: platform-team
+  type: service
+  parameters:
+    - title: Application Information
+      required:
+        - applicationId
+      properties:
+        applicationId:
+          title: Application ID
+          type: string
+          description: Unique identifier for the application being onboarded
+          pattern: '^[a-zA-Z0-9-_]+$'
+        additionalEnvironment:
+          title: Additional Environment
+          type: boolean
+          description: Configure if an additional environment in LeanIX is created
+          default: false
+        members:
+          title: Members
+          type: array
+          description: A list of members that should be onboarded to the given application
+          items:
+            type: string
+          default: []
+          ui:options:
+            addable: true
+            removable: true
+            placeholder: "Enter member ID or email"
+    - title: Platform Configuration
+      properties:
+        createGitlabGroup:
+          title: Create GitLab Group
+          type: boolean
+          description: Create a corresponding GitLab group for this application
+          default: true
+        enableCI:
+          title: Enable CI/CD
+          type: boolean
+          description: Set up CI/CD pipelines for the application
+          default: true
+        enableMonitoring:
+          title: Enable Monitoring
+          type: boolean
+          description: Configure monitoring and alerting for the application
+          default: true
+  steps:
+    - id: log
+      name: Log Onboarding Parameters
+      action: debug:log
+      input:
+        message: 'Onboarding Application: ${{ parameters.applicationId }}, Additional Environment: ${{ parameters.additionalEnvironment }}, Members: ${{ parameters.members }}'
+   
+  output:
+    text:
+      - title: Onboarding Summary
+        content: |
+          Application "${{ parameters.applicationId }}" has been successfully onboarded with:
+          - Additional Environment: ${{ parameters.additionalEnvironment }}
+          - Members: ${{ parameters.members | length }} member(s)
+          - GitLab Group: ${{ parameters.createGitlabGroup }}
+          - CI/CD Enabled: ${{ parameters.enableCI }}
+          - Monitoring Enabled: ${{ parameters.enableMonitoring }}
