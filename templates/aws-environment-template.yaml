@@ -1,0 +1,119 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: aws-environment-template
+  title: AWS Environment Template
+  description: Create a new AWS Environment with specified configuration and security setup
+  tags:
+    - aws
+    - environment
+    - cloud
+    - infrastructure
+spec:
+  owner: platform-team
+  type: infrastructure
+  parameters:
+    - title: Environment Configuration
+      required:
+        - name
+        - account
+      properties:
+        name:
+          title: Environment Name
+          type: string
+          description: Unique name for the AWS environment
+          pattern: '^[a-zA-Z0-9-_]+$'
+        account:
+          title: AWS Account
+          type: string
+          description: AWS account identifier where the environment will be created
+          pattern: '^[0-9]{12}$'
+        region:
+          title: AWS Region
+          type: string
+          description: Primary AWS region for the environment
+          enum:
+            - us-east-1
+            - us-west-2
+            - eu-west-1
+            - eu-central-1
+            - ap-southeast-1
+            - ap-northeast-1
+          default: us-east-1
+        environment_type:
+          title: Environment Type
+          type: string
+          description: Type of environment being created
+          enum:
+            - development
+            - staging
+            - production
+            - sandbox
+          default: development
+    - title: Security & Compliance
+      properties:
+        enableWizSecurity:
+          title: Enable Wiz Security
+          type: boolean
+          description: Enable Wiz security scanning and compliance monitoring
+          default: true
+        enableCloudTrail:
+          title: Enable CloudTrail
+          type: boolean
+          description: Enable AWS CloudTrail for audit logging
+          default: true
+        enableGuardDuty:
+          title: Enable GuardDuty
+          type: boolean
+          description: Enable AWS GuardDuty for threat detection
+          default: true
+        enableConfig:
+          title: Enable Config
+          type: boolean
+          description: Enable AWS Config for compliance monitoring
+          default: true
+    - title: Provider Configuration
+      properties:
+        awsProviderConfig:
+          title: AWS Provider Config
+          type: string
+          description: Provider configuration reference for AWS
+          default: "aws-provider"
+        awsIAMProviderConfig:
+          title: AWS IAM Provider Config
+          type: string
+          description: Provider configuration reference for AWS IAM
+          default: "aws-provider-iam"
+        azureADProviderConfig:
+          title: Azure AD Provider Config
+          type: string
+          description: Provider configuration reference for Azure AD
+          default: "provider-azuread"
+        leanixProviderConfig:
+          title: LeanIX Provider Config
+          type: string
+          description: Provider configuration reference for LeanIX
+          default: "provider-config-leanix"
+        wizProviderConfig:
+          title: Wiz Provider Config
+          type: string
+          description: Provider configuration reference for Wiz
+          default: "provider-config-wiz"
+  steps:
+    - id: log
+      name: Log AWS Environment Parameters
+      action: debug:log
+      input:
+        message: 'Creating AWS Environment: ${{ parameters.name }}, Account: ${{ parameters.account }}, Region: ${{ parameters.region }}, Type: ${{ parameters.environment_type }}'
+  output:
+    text:
+      - title: AWS Environment Summary
+        content: |
+          AWS Environment "${{ parameters.name }}" has been configured with:
+          - Account: ${{ parameters.account }}
+          - Region: ${{ parameters.region }}
+          - Type: ${{ parameters.environment_type }}
+          - Wiz Security: ${{ parameters.enableWizSecurity }}
+          - CloudTrail: ${{ parameters.enableCloudTrail }}
+          - GuardDuty: ${{ parameters.enableGuardDuty }}
+          - Config: ${{ parameters.enableConfig }}
